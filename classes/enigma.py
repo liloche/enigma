@@ -20,10 +20,10 @@ class Enigma:
             self.ajouter_permutation(permutation[0], permutation[1])
         self.choix_rotors(rotors)
         for i in range(3):
-            if not liste_positions[0][0].isdigit():
-                self.changer_position_rotor(i, lettre_en_nombre(liste_positions[i]))
+            if not liste_positions[i][0].isdigit():
+                self.rotors[i].appliquer_position(lettre_en_nombre(liste_positions[i]))
             else:
-                self.changer_position_rotor(i, int(liste_positions[i]))
+                self.rotors[i].appliquer_position(int(liste_positions[i]))
         return
 
     def choix_rotors(self, alignements_rotors : str) -> list[Rotor]:
@@ -37,14 +37,6 @@ class Enigma:
                 if liste_rotor[i].nom == rotor:
                     self.rotors.append(liste_rotor[i])
         return self.rotors
-
-    def changer_position_rotor(self, rotor: int, position: int) -> None:
-        assert rotor in [0, 1, 2], f"Le rotor n°{rotor} n'est pas installé dans Enigma" # vérifier que le rotor est bien installé dans la machine
-        self.rotors[rotor].appliquer_position(position)
-        return
-
-    def permuter_lettre(self, lettre: str) -> str:
-        return nombre_en_lettre(self.permutation[lettre_en_nombre(lettre)])
 
     def verifier_permutations(self) -> None:
         for i in range(26):
@@ -67,7 +59,7 @@ class Enigma:
         while self.rotors[i].tourner_rotor() and i < 3:
             i += 1
         # La lettre pase dans les permutations
-        lettre = self.permuter_lettre(lettre)
+        lettre = nombre_en_lettre(self.permutation[lettre_en_nombre(lettre)])
         # print("Première permutation :", lettre)
         # La lettre permutée passe dans les rotors
         lettre = self.rotors[0].permuter_lettre(lettre)
@@ -87,7 +79,7 @@ class Enigma:
         lettre = self.rotors[0].permuter_lettre_inverse(lettre)
         # print("Premier rotor inverse :", lettre)
         # La lettre repasse dans les permutations
-        lettre = self.permuter_lettre(lettre)
+        lettre = nombre_en_lettre(self.permutation[lettre_en_nombre(lettre)])
         # print("Dernière permutation :", lettre)
         return lettre
 
